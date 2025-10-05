@@ -1,0 +1,55 @@
+[System]
+Name='condizionamento'
+Type='mamdani'
+Version=2.0
+NumInputs=2
+NumOutputs=2
+NumRules=9
+AndMethod='min'
+OrMethod='max'
+ImpMethod='min'
+AggMethod='max'
+DefuzzMethod='centroid'
+
+[Input1]
+Name='temperatura_random'
+Range=[15 38]
+NumMFs=3
+MF1='low':'gaussmf',[4.07 15]
+MF2='medium':'gaussmf',[4.07 26.5]
+MF3='high':'gaussmf',[4.07 38]
+
+[Input2]
+Name='umidità_random'
+Range=[0 100]
+NumMFs=3
+MF1='low':'gaussmf',[17.69 4.441e-16]
+MF2='medium':'gaussmf',[17.69 50]
+MF3='high':'gaussmf',[17.69 100]
+
+[Output1]
+Name='temperatura_condizionata'
+Range=[18 26]
+NumMFs=3
+MF1='low':'gaussmf',[2.5 19]
+MF2='medium':'gaussmf',[2.5 22]
+MF3='high':'gaussmf',[2.5 25]
+
+[Output2]
+Name='umidità_condizionata'
+Range=[35 65]
+NumMFs=3
+MF1='low':'gaussmf',[8 40]
+MF2='medium':'gaussmf',[8 50]
+MF3='high':'gaussmf',[8 60]
+
+[Rules]
+1 1, 1 1 (1) : 1
+2 1, 2 1 (0.8) : 1
+3 1, 3 2 (0.8) : 1
+1 2, 2 2 (0.8) : 1
+2 2, 2 2 (1) : 1
+3 2, 3 3 (0.8) : 1
+1 3, 2 3 (0.8) : 1
+2 3, 3 3 (0.8) : 1
+3 3, 3 3 (1) : 1
