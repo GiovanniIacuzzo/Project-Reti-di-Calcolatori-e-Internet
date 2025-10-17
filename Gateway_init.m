@@ -2,7 +2,8 @@ function Gateway_init
 
 ttInitKernel('prioFP');
 
-ttCreateMailbox('temp_umid_signal', 10);
+ttCreateMailbox('temp_signal', 10);
+ttCreateMailbox('umid_signal', 10);
 ttCreateMailbox('co2_signal', 10);
 ttCreateMailbox('control_signal', 10);
 

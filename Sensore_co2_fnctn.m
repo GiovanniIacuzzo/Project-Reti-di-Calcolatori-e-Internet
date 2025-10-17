@@ -7,7 +7,7 @@ switch segment
     case 2
         data.msg.type = 'co2_signal';
         data.msg.timeStamp = ttCurrentTime;
-        ttSendMsg(4, data.msg, 80);
+        ttSendMsg(3, data.msg, 80);
         exectime = 0.02;
     case 3
         exectime = -1;

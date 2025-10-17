@@ -2,7 +2,8 @@ function Controllore_init
 
 ttInitKernel('prioFP');
 
-ttCreateMailbox('temp_umid_signal', 10);
+ttCreateMailbox('temp_signal', 10);
+ttCreateMailbox('umid_signal', 10);
 ttCreateMailbox('co2_signal', 10);
 
 ttSetKernelParameter('energyconsumption', 0.04);

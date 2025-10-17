@@ -26,7 +26,7 @@ switch segment
         if data.temperatura ~= 0
             msg.messaggio = data.temperatura;
             msg.type = 'temp_umid_signal';
-            ttSendMsg([3 1], msg, 80);
+            %ttSendMsg([3 1], msg, 80);
         else
             disp('errore');
         end
@@ -34,7 +34,7 @@ switch segment
         if data.umidita ~= 0
             msg.messaggio = data.umidita;
             msg.type = 'temp_umid_signal';
-            ttSendMsg([3 1], msg, 80);
+            %ttSendMsg([3 1], msg, 80);
         else
             disp('errore');
         end
@@ -42,7 +42,7 @@ switch segment
         if data.co2 ~= 0
             msg.messaggio = data.co2;
             msg.type = 'co2_signal';
-            ttSendMsg([3 1], msg, 80);
+            %ttSendMsg([3 1], msg, 80);
         else
             disp('errore');
         end
@@ -50,7 +50,7 @@ switch segment
         if data.potenza ~= 0
             msg.messaggio = data.potenza;
             msg.type = 'p_signal';
-            ttSendMsg([3 1], msg, 80);
+            %ttSendMsg([3 1], msg, 80);
         else
             disp('errore');
         end
