@@ -45,7 +45,7 @@ Ogni nodo sarà rappresentato in **Simulink/TrueTime** con parametri di rete con
 
 ---
 
-## ⚙️ Setup iniziale (livello alto)
+## ⚙️ Setup iniziale
 
 > I dettagli tecnici verranno definiti successivamente, in base alla configurazione dell’ambiente.
 
