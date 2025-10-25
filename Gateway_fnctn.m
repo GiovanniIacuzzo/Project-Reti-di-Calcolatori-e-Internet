@@ -29,7 +29,7 @@ switch segment
         if ~isempty(umid_msg)
             data.umidita = umid_msg.messaggio_umidita;
             data.timeStamp = umid_msg.timeStamp;
-            disp(['Gateway: valore umidita ricevuto: ' num2str(data.umidita) ]);
+            % disp(['Gateway: valore umidita ricevuto: ' num2str(data.umidita) ]);
             if ttCurrentTime > 60 && ttCurrentTime < 65
                 disp('[Gateway](1): pacchetto temperatura');
             end
@@ -40,7 +40,7 @@ switch segment
                 disp('[Gateway](3): pacchetto temperatura');
             end
         else
-            disp('Gateway: nessun valore temperatra ricevuto...');
+            % disp('Gateway: nessun valore umidità ricevuto...');
         end
 
         exectime = 0.002;
