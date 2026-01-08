@@ -1,54 +1,27 @@
 function Gateway_init
-
 ttInitKernel('prioFP');
 
-ttCreateMailbox('temp_signal', 10);
-ttCreateMailbox('umid_signal', 10);
+% --- Reti ---
+% Rete 1: Sensori (Wireless) -> Riceviamo Env e CO2
+ttCreateMailbox('env_signal', 10);
 ttCreateMailbox('co2_signal', 10);
-ttCreateMailbox('control_signal', 10);
 
-% creazione gateway
-nome_g1 = 'Task_Gateway';
-deadline = 0.010;
-funzione1 = 'Gateway_fnctn';
+% Rete 2: Controllore (Wireless) -> Riceviamo CMD
+ttCreateMailbox('cmd_signal', 10);
 
-% creazione del Task
-ttCreateTask(nome_g1, deadline, funzione1);
+% --- Task 1: Aggregatore (Verso Controllore) ---
+ttCreateTask('Task_Gateway', 0.020, 'Gateway_fnctn');
+ttSetPriority(1, 'Task_Gateway');
+% Handler Rete 1 (Sensori)
+ttCreateHandler('nw_handler_sens', 1, 'nethandgat_fnctn');
+ttAttachNetworkHandler(1, 'nw_handler_sens'); 
 
-prio = 1;
-ttSetPriority(prio, nome_g1);
+% --- Task 2: Inoltro (Verso Attuatore) ---
+ttCreateTask('Task_Gateway2', 0.020, 'Gateway2_fnctn');
+ttSetPriority(2, 'Task_Gateway2');
+% Handler Rete 2 (Controllore Wireless)
+ttCreateHandler('nw_handler_contr', 1, 'nethandgat1_fnctn'); 
+ttAttachNetworkHandler(2, 'nw_handler_contr'); % Ascolta sulla porta 2 (Wireless Controllore)
 
-% creazione del network handler
-nome_nh = 'nw_handlergat';
-funzione_nh = 'nethandgat_fnctn';
-
-ttCreateHandler(nome_nh, 1, funzione_nh);
-ttAttachNetworkHandler(1, nome_nh);
-
-% Log Gateway
-ttCreateLog(nome_g1, 1, 'GatewayResponseTime', 2000);
-ttCreateLog(nome_g1, 2, 'GatewayReleaseLatency', 2000);
-ttCreateLog(nome_g1, 3, 'GatewayStartLatency', 2000);
-ttCreateLog(nome_g1, 4, 'GatewayExecutionTime', 2000);
-
-% creazione gateway
-nome_g2 = 'Task_Gateway2';
-funzione2 = 'Gateway2_fnctn';
-
-% creazione del Task
-ttCreateTask(nome_g2, deadline, funzione2);
-
-ttSetPriority(prio, nome_g2);
-
-% creazione del network handler
-nome_nh1 = 'nw_handlergat1';
-funzione_nh1 = 'nethandgat1_fnctn';
-
-ttCreateHandler(nome_nh1, 1, funzione_nh1);
-ttAttachNetworkHandler(2, nome_nh1);
-
-% Log Gateway2
-ttCreateLog(nome_g2, 1, 'Gateway2ResponseTime', 2000);
-ttCreateLog(nome_g2, 2, 'Gateway2ReleaseLatency', 2000);
-ttCreateLog(nome_g2, 3, 'Gateway2StartLatency', 2000);
-ttCreateLog(nome_g2, 4, 'Gateway2ExecutionTime', 2000);
+% Log
+ttCreateLog('Task_Gateway', 1, 'Gat1_Resp', 1000);

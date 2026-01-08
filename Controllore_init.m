@@ -1,30 +1,24 @@
 function Controllore_init
-
 ttInitKernel('prioFP');
 
-ttCreateMailbox('temp_signal', 10);
-ttCreateMailbox('umid_signal', 10);
-ttCreateMailbox('co2_signal', 10);
+% Mailbox unica per il vettore di stato dai sensori
+ttCreateMailbox('state_vector', 10);
 
+% Parametri energetici
 ttSetKernelParameter('energyconsumption', 0.04);
 
+% Creazione Task Controllore
 nome_c = 'Task_Controllore';
-deadline = 0.010;
+deadline = 0.020; % Deadline rilassata leggermente
 funzione = 'Controllore_fnctn';
-
-%Creazione del Task controllore
 ttCreateTask(nome_c, deadline, funzione);
+ttSetPriority(1, nome_c);
 
-prio = 1;
-ttSetPriority(prio, nome_c);
-
+% Network Handler
 nome_hd = 'nw_handlerControllore';
 funzione_hd = 'nethandlerControllore_fnctn';
-
 ttCreateHandler(nome_hd, 1, funzione_hd);
-ttAttachNetworkHandler(nome_hd);
+ttAttachNetworkHandler(nome_hd); % Attach automatico alla rete connessa
 
-ttCreateLog(nome_c, 1, 'ControlloreResponseTime', 2000);
-ttCreateLog(nome_c, 2, 'ControlloreReleaseLatency', 2000);
-ttCreateLog(nome_c, 3, 'ControlloreStartLatency', 2000);
-ttCreateLog(nome_c, 4, 'ControlloreExecutionTime', 2000);
+% Log
+ttCreateLog(nome_c, 1, 'ControlloreRespTime', 2000);

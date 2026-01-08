@@ -1,69 +1,47 @@
-function[exectime, data] = Gateway2_fnctn(segment, data)
+function [exectime, data] = Gateway2_fnctn(segment, data)
+persistent total_bits start_time
+
+if isempty(total_bits)
+    total_bits = 0;
+    start_time = ttCurrentTime;
+end
 
 switch segment
     case 1
-        temp_msg = ttTryFetch('control_signal');
-        if ttCurrentTime > 60 && ttCurrentTime < 65
-            disp('[Gateway](1): ricevuto controllore');
-        end
-        if ttCurrentTime > 300 && ttCurrentTime < 305
-            disp('[Gateway](2): ricevuto controllore');
-        end
-        if ttCurrentTime > 540 && ttCurrentTime < 545
-            disp('[Gateway](3): ricevuto controllore');
-        end
-        temp_msg.type = 'control_signal';
-        data.timeStamp = temp_msg.timeStamp;
+        % Preleva il pacchetto di comando
+        cmd_msg = ttTryFetch('cmd_signal');
         
-        data.temperatura = temp_msg.messaggio.temperatura;
-        data.umidita = temp_msg.messaggio.umidita;
-        data.co2 = temp_msg.messaggio.co2;
-        data.potenza = temp_msg.messaggio.potenza;
-
-        exectime = 0.03;
-    
+        if ~isempty(cmd_msg)
+            data.packet = cmd_msg;
+            
+            % Aggiornamento Metriche (Pacchetto comando ~100 bit)
+            total_bits = total_bits + 100;
+            
+            % Log ricezione
+            disp(['[Gateway2] @' num2str(ttCurrentTime) 's -> RICEVUTO CMD.']); 
+        else
+            data.packet = [];
+        end
+        exectime = 0.01;
+        
     case 2
-        if data.temperatura ~= 0
-            msg.messaggio = data.temperatura;
-            % msg.type = 'temp_signal';
-            ttSendMsg([3 1], msg, 80);
-        else
-            disp('errore');
+        % Inoltra il pacchetto all'Attuatore
+        if ~isempty(data.packet)
+            
+            % --- CALCOLO THROUGHPUT ---
+            elapsed = ttCurrentTime - start_time;
+            if elapsed > 0
+                gw2_throughput = total_bits / elapsed;
+            else
+                gw2_throughput = 0;
+            end
+            % Invio su Simulink (Canale 1)
+            ttAnalogOut(1, gw2_throughput);
+            
+            disp(['[Gateway2] -> INOLTRO Wireless. TP: ' num2str(gw2_throughput) ' bps']);
+            
+            % Invio sulla Rete 3 (Wireless Attuatore)
+            ttSendMsg([3 1], data.packet, 100); 
         end
-
-        if data.umidita ~= 0
-            msg.messaggio = data.umidita;
-            % msg.type = 'umid_signal';
-            ttSendMsg([3 1], msg, 80);
-        else
-            disp('errore');
-        end
-       
-        if data.co2 ~= 0
-            msg.messaggio = data.co2;
-            % msg.type = 'co2_signal';
-            ttSendMsg([3 1], msg, 80);
-        else
-            disp('errore');
-        end
-        
-        if data.potenza ~= 0
-            msg.messaggio = data.potenza;
-            % msg.type = 'p_signal';
-            ttSendMsg([3 1], msg, 80);
-        else
-            disp('errore');
-        end
-
-        if ttCurrentTime > 60 && ttCurrentTime < 65
-            disp('[Gateway](1): mando attuatore');
-        end
-        if ttCurrentTime > 300 && ttCurrentTime < 305
-            disp('[Gateway](2): mando attuatore');
-        end
-        if ttCurrentTime > 540 && ttCurrentTime < 545
-            disp('[Gateway](3): mando attuatore');
-        end
-
         exectime = -1;
 end
